@@ -4,28 +4,33 @@ using NetX.Interop.Structs;
 
 namespace NetX.Interop
 {
-    public  class LibXcb 
+    internal static class LibXcb 
     {
-        const string libxcb = "libxcb.so";
+        private const string libxcb = "libxcb.so";
 
         //returns pointer to XcbConnection 
         [DllImport(libxcb, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
-        public static extern IntPtr xcb_connect([MarshalAs(UnmanagedType.LPStr)] 
+        internal static extern IntPtr xcb_connect([MarshalAs(UnmanagedType.LPStr)] 
                                                     string displayName, ref int screen);
 
         [DllImport(libxcb, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
-        public static extern void xcb_disconnect(IntPtr xcbConnection);
+        internal static extern IntPtr xcb_connect([MarshalAs(UnmanagedType.LPStr)] 
+                                                    string displayName, IntPtr screen);
+
+
+        [DllImport(libxcb, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        internal static extern void xcb_disconnect(IntPtr xcbConnection);
 
         // returns Pointer to XcbSetup
         [DllImport(libxcb, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
-        public static extern IntPtr xcb_get_setup(IntPtr xcbConnection);
+        internal static extern IntPtr xcb_get_setup(IntPtr xcbConnection);
 
         // return XcbSetupIterator
         [DllImport(libxcb, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
-        public static extern XcbSetupIterator xcb_setup_roots_iterator(IntPtr xcbSetup);
+        internal static extern XcbScreenIterator xcb_setup_roots_iterator(IntPtr xcbSetup);
 
         [DllImport(libxcb, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
-        public static extern XcbVoidCookie xcb_create_window (IntPtr xcbConnection,    
+        internal static extern XcbVoidCookie xcb_create_window (IntPtr xcbConnection,    
                                                      byte depth,             
                                                      uint wid,               
                                                      uint parent,           
@@ -37,37 +42,26 @@ namespace NetX.Interop
                                                      ushort _class,
                                                      uint visual,
                                                      uint value_mask,
-                                                     ref uint value_list);
+                                                     uint[] value_list);
         
         [DllImport(libxcb, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
-        public static extern XcbVoidCookie xcb_create_gc (IntPtr xcbConnection,
+        internal static extern XcbVoidCookie xcb_create_gc (IntPtr xcbConnection,
                                                 uint cid,
                                                 uint drawable, 
                                                 uint value_mask,
-                                                ref uint value_list);
+                                                uint[] value_list);
 
 
         [DllImport(libxcb, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
-        public static extern XcbVoidCookie xcb_map_window (IntPtr xcbConnection, uint window);
+        internal static extern XcbVoidCookie xcb_map_window (IntPtr xcbConnection, uint window);
 
         [DllImport(libxcb, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
-        public static extern uint xcb_generate_id(IntPtr xcbConnection);
+        internal static extern uint xcb_generate_id(IntPtr xcbConnection);
 
         [DllImport(libxcb, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
-        public static extern int xcb_flush (IntPtr xcbConnection);
+        internal static extern int xcb_flush (IntPtr xcbConnection);
+
+        [DllImport(libxcb, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        internal static extern void xcb_screen_next (ref XcbScreenIterator xcbScreenIterator);
     }
-
-    public class Xcb
-    {
-        // todo: should return XcbConnecton
-        public void Connect(string displayName, int screen)
-        {   
-            try 
-            {
-                // todo : implement
-            } 
-            finally {}
-        }
-    }
-    
 }

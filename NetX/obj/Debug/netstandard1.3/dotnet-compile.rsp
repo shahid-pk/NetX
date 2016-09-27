@@ -56,6 +56,12 @@
 --reference:/home/shahid/.nuget/packages/System.Threading.Timer/4.0.1/ref/netstandard1.2/System.Threading.Timer.dll
 --reference:/home/shahid/.nuget/packages/System.Xml.ReaderWriter/4.0.11/ref/netstandard1.3/System.Xml.ReaderWriter.dll
 --reference:/home/shahid/.nuget/packages/System.Xml.XDocument/4.0.11/ref/netstandard1.3/System.Xml.XDocument.dll
+/home/shahid/repos/NetX/NetX/XWindows/XSetup.cs
+/home/shahid/repos/NetX/NetX/XWindows/XWindow.cs
+/home/shahid/repos/NetX/NetX/XWindows/XScreen.cs
+/home/shahid/repos/NetX/NetX/XWindows/XConnection.cs
+/home/shahid/repos/NetX/NetX/XWindows/XApplication.cs
+/home/shahid/repos/NetX/NetX/XWindows/Graphics/XGraphicsContext.cs
 /home/shahid/repos/NetX/NetX/Interop/LibXcb.cs
 /home/shahid/repos/NetX/NetX/Interop/Structs/XcbSetup.cs
 /home/shahid/repos/NetX/NetX/Interop/Structs/XcbConnection.cs

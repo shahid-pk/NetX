@@ -5,41 +5,39 @@ namespace NetX.Interop.Structs
 {
     // struct xcb_screen_t
     [StructLayout(LayoutKind.Sequential)]
-    public class XcbScreen
+    internal class XcbScreen
     {
-        public uint root;
-        public uint default_colormap;
-        public uint white_pixel;
-        public uint black_pixel;
-        public uint current_input_masks;
-        public ushort width_in_pixels;
-        public ushort height_in_pixels;
-        public ushort width_in_millimeters;
-        public ushort height_in_millimeters;
-        public ushort min_installed_maps;
-        public ushort max_installed_maps;
-        public uint root_visual;
-        public byte backing_stores;
-        public byte save_unders;
-        public byte root_depth;
-        public byte allowed_depths_len;
+        internal uint root;
+        internal uint default_colormap;
+        internal uint white_pixel;
+        internal uint black_pixel;
+        internal uint current_input_masks;
+        internal ushort width_in_pixels;
+        internal ushort height_in_pixels;
+        internal ushort width_in_millimeters;
+        internal ushort height_in_millimeters;
+        internal ushort min_installed_maps;
+        internal ushort max_installed_maps;
+        internal uint root_visual;
+        internal byte backing_stores;
+        internal byte save_unders;
+        internal byte root_depth;
+        internal byte allowed_depths_len;
     }
 
     // struct xcb_screen_iterator_t
     [StructLayout(LayoutKind.Sequential)]
-    public class XcbScreenIterator
+    internal struct XcbScreenIterator
     {
-        // Pointer to XcbScreen
-        [MarshalAs(UnmanagedType.LPStruct)]
-        public XcbScreen data;
-        public int rem;
-        public int index;
+        internal IntPtr data;
+        internal int rem;
+        internal int index;
     }
 
     // struct xcb_void_cookie_t
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi)]
-    public struct XcbVoidCookie
+    internal struct XcbVoidCookie
     {
-        uint sequence;
+        internal uint sequence;
     }
 }
