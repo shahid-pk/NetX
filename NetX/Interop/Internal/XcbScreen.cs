@@ -1,7 +1,7 @@
 using System;
 using System.Runtime.InteropServices;
 
-namespace NetX.Interop.Structs
+namespace NetX.Interop.Internal
 {
     // struct xcb_screen_t
     [StructLayout(LayoutKind.Sequential)]

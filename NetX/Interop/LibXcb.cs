@@ -1,6 +1,6 @@
 using System;
 using System.Runtime.InteropServices;
-using NetX.Interop.Structs;
+using NetX.Interop.Internal;
 
 namespace NetX.Interop
 {

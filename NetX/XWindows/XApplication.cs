@@ -32,6 +32,11 @@ namespace NetX.XWindows
             xcbConnection = LibXcb.xcb_connect(null,IntPtr.Zero);
         }
 
+        ~XApplication()
+        {
+            Dispose(false);
+        }
+
         public XApplication(XWindow mainWindow)
         {
             this.MainWindow = mainWindow;
@@ -79,9 +84,21 @@ namespace NetX.XWindows
                 throw new Exception("No MainWindow associated with the Application");
             MainWindow.Show();
         }
-        public virtual void Dispose()
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+           
+        } 
+
+        protected virtual void Dispose(bool disposing)
         {
             LibXcb.xcb_disconnect(xcbConnection);
-        } 
+            if (disposing)
+            { 
+              if(xcbConnection != IntPtr.Zero)
+                xcbConnection = IntPtr.Zero;      //if we reach here our IntPtr is refrencing invalid memmory  
+            }
+        }
     }
 }

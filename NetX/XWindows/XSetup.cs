@@ -1,7 +1,7 @@
 using System;
 using NetX.Interop;
 using System.Collections.Generic;
-using NetX.Interop.Structs;
+using NetX.Interop.Internal;
 using System.Runtime.InteropServices;
 
 namespace NetX.XWindows 
