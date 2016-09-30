@@ -93,6 +93,7 @@ namespace NetX.XWindows
 
         protected virtual void Dispose(bool disposing)
         {
+            // deallocate memmory accessed by xcb_connection_t structure
             LibXcb.xcb_disconnect(xcbConnection);
             if (disposing)
             { 

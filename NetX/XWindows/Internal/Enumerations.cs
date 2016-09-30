@@ -3,7 +3,7 @@
 namespace NetX.XWindows.Internal
 {
     // for xcb_mod_mask_t
-    internal enum ModMask
+    internal enum XcbModMask
      { 
         MOD_MASK_SHIFT = 1, 
         MOD_MASK_LOCK = 2, 
@@ -17,7 +17,7 @@ namespace NetX.XWindows.Internal
     }
 
     // for xcb_event_mask_t
-    internal enum EventMask 
+    internal enum XcbEventMask 
     { 
         EVENT_MASK_NO_EVENT = 0, 
         EVENT_MASK_KEY_PRESS = 1, 

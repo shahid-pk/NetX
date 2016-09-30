@@ -1,6 +1,5 @@
 using System;
 using NetX.Interop;
-using NetX.XWindows.Graphics;
 using NetX.XWindows.Internal;
 
 namespace NetX.XWindows
@@ -11,11 +10,9 @@ namespace NetX.XWindows
 
         private XScreen screen;
 
-        private uint windowHandle;
+        internal uint windowHandle;
 
-        private uint gcHandle;
-
-        internal bool Initialized {get;set;}
+        protected internal bool Initialized {get;set;}
 
         // Public properties
         public short XPosition {get;set;}
@@ -40,7 +37,7 @@ namespace NetX.XWindows
         public event WindowCreatedEventHandler WindowCreated;
         public event WindowInitializedEventHandler WindowInitialized;
 
-        // end public handlers and events
+        // Public handlers and events end
 
         public XWindow() 
         {
@@ -69,25 +66,17 @@ namespace NetX.XWindows
         public virtual void Initialize(XApplication application)
         {
             this.application = application;
-            this.screen = this.application.Screen;
-            //CreateXGraphicsContext();
+            this.screen = application.Screen;
             CreateWindow();
             OnWindowCreated(EventArgs.Empty);
         }
 
-        private void CreateXGraphicsContext()
+        protected void CreateWindow()
         {
-            gcHandle = LibXcb.xcb_generate_id(this.application.Connection);
-            uint[] valueList = {screen.BlackPixel};
-            var Context = new XGraphicsContext(application.Connection,gcHandle,screen.Root,
-                                            (uint)GraphicsContext.GC_FOREGROUND,valueList);
-        }
-
-        private void CreateWindow()
-        {
-            uint[] valueList = {screen.WhitePixel};
-            windowHandle = LibXcb.xcb_generate_id(this.application.Connection);
-            LibXcb.xcb_create_window (this.application.Connection,      /* Connection          */
+            uint mask = (uint) (XcbCW.XCB_CW_BACK_PIXEL | XcbCW.XCB_CW_EVENT_MASK) ;
+            uint[] valueList = { screen.WhitePixel, (uint)XcbEventMask.EVENT_MASK_EXPOSURE };
+            windowHandle = LibXcb.xcb_generate_id(application.Connection);
+            LibXcb.xcb_create_window (application.Connection,           /* Connection          */
                 screen.RootDepth,                                       /* depth (same as root)*/
                 windowHandle,                                           /* window Id           */
                 screen.Root,                                            /* parent window       */
@@ -96,9 +85,14 @@ namespace NetX.XWindows
                 BorderWidth,                                            /* border_width        */
                 (ushort)WindowClass.WINDOW_CLASS_INPUT_OUTPUT,          /* class               */
                 screen.RootVisual,                                      /* visual              */
-                (uint)XcbCW.XCB_CW_BACK_PIXEL, valueList);              /* masks, not used yet */
+                mask, valueList);                                       /* masks, not used yet */
         }
         
+        protected internal void Update(uint mask, uint[] valueList)
+        {
+            LibXcb.xcb_change_window_attributes(application.Connection,windowHandle,mask, valueList);
+        }
+
         public virtual void Show()
         {
             if(!Initialized)

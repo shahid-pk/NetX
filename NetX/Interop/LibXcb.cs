@@ -31,25 +31,25 @@ namespace NetX.Interop
 
         [DllImport(libxcb, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         internal static extern XcbVoidCookie xcb_create_window (IntPtr xcbConnection,    
-                                                     byte depth,             
-                                                     uint wid,               
-                                                     uint parent,           
-                                                     short x,                 
-                                                     short y,                 
-                                                     ushort width,
-                                                     ushort height,            
-                                                     ushort border_width,
-                                                     ushort _class,
-                                                     uint visual,
-                                                     uint value_mask,
-                                                     uint[] value_list);
+                                                                byte depth,             
+                                                                uint wid,               
+                                                                uint parent,           
+                                                                short x,                 
+                                                                short y,                 
+                                                                ushort width,
+                                                                ushort height,            
+                                                                ushort border_width,
+                                                                ushort _class,
+                                                                uint visual,
+                                                                uint value_mask,
+                                                                uint[] value_list);
         
         [DllImport(libxcb, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         internal static extern XcbVoidCookie xcb_create_gc (IntPtr xcbConnection,
-                                                uint cid,
-                                                uint drawable, 
-                                                uint value_mask,
-                                                uint[] value_list);
+                                                            uint cid,
+                                                            uint drawable, 
+                                                            uint value_mask,
+                                                            uint[] value_list);
 
 
         [DllImport(libxcb, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
@@ -63,5 +63,77 @@ namespace NetX.Interop
 
         [DllImport(libxcb, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         internal static extern void xcb_screen_next (ref XcbScreenIterator xcbScreenIterator);
+
+        [DllImport(libxcb, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        internal static extern XcbVoidCookie xcb_change_window_attributes(  IntPtr xcbConnection, 
+                                                                            uint windowHandle, 
+                                                                            uint value_mask, 
+                                                                            uint[] value_list);
+
+        [DllImport(libxcb, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        internal static extern XcbVoidCookie xcb_change_gc (IntPtr xcbConnection,
+                                                            uint gcHandle,
+                                                            uint value_mask,
+                                                            uint[] value_list);
+        
+        [DllImport(libxcb, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        internal static extern XcbVoidCookie xcb_poly_point (   IntPtr xcbConnection,
+                                                                byte cordinateMode,          
+                                                                uint drawable,
+                                                                uint gcHandle,
+                                                                uint points_len,
+                                                                XcbPoint[] points);
+
+        [DllImport(libxcb, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        internal static extern XcbVoidCookie xcb_fill_poly (IntPtr xcbConnection,        
+                                                            uint drawable,
+                                                            uint gcHandle,
+                                                            uint shape,
+                                                            byte cordinateMode,
+                                                            uint points_len,
+                                                            XcbPoint[] points);
+        
+        [DllImport(libxcb, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        internal static extern XcbVoidCookie xcb_poly_segment ( IntPtr xcbConnection,
+                                                                uint drawable,
+                                                                uint gcHandle,             
+                                                                uint segments_len,   
+                                                                XcbSegment[] segments);
+
+        [DllImport(libxcb, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        internal static extern XcbVoidCookie  xcb_poly_rectangle (  IntPtr xcbConnection,
+                                                                    uint drawable,
+                                                                    uint gcHandle,
+                                                                    uint rectangles_len,
+                                                                    XcbRectangle[] rectangles);
+
+        [DllImport(libxcb, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        internal static extern XcbVoidCookie  xcb_poly_fill_rectangle ( IntPtr xcbConnection,
+                                                                        uint drawable,
+                                                                        uint gcHandle,
+                                                                        uint rectangles_len,
+                                                                        XcbRectangle[] rectangles);
+        
+        [DllImport(libxcb, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        internal static extern XcbVoidCookie xcb_poly_arc ( IntPtr xcbConnection,
+                                                            uint drawable,
+                                                            uint gcHandle,
+                                                            uint arcs_len,
+                                                            XcbArc[] arcs); 
+
+        [DllImport(libxcb, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        internal static extern XcbVoidCookie xcb_poly_fill_arc (IntPtr xcbConnection,
+                                                                uint drawable,
+                                                                uint gcHandle,
+                                                                uint arcs_len,
+                                                                XcbArc[] arcs); 
+        
+        // Blocking
+        [DllImport(libxcb, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        internal static extern IntPtr xcb_wait_for_event (IntPtr xcbConnection);
+
+        // Non-Blocking
+        [DllImport(libxcb, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        internal static extern IntPtr xcb_poll_for_event(IntPtr xcbConnection);
     }
 }
