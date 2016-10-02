@@ -9,13 +9,9 @@ namespace ConsoleApplication
         {
             try
             {
-                using(var application = new XApplication())
-                {
-                    application.MainWindow = new XWindow();
-                    application.Run();
-                    application.Flush();
-                    Console.ReadKey();
-                }
+                var application = new XApplication();
+                application.MainWindow = new XWindow();
+                application.Run();
             }
             catch(Exception ex)
             {

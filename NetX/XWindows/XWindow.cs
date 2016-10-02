@@ -15,8 +15,8 @@ namespace NetX.XWindows
         protected internal bool Initialized {get;set;}
 
         // Public properties
-        public short XPosition {get;set;}
-        public short YPosition {get;set;}
+        public short XPosition {get;set;} = 0;
+        public short YPosition {get;set;} = 0;
         public ushort Width {get;set;} = 400;
         public ushort Height {get;set;} = 300;
 
@@ -34,8 +34,11 @@ namespace NetX.XWindows
 
         public delegate void WindowInitializedEventHandler(object sender, EventArgs e);
 
+        public delegate void WindowExposedEventHandler(object sender, EventArgs e);
+
         public event WindowCreatedEventHandler WindowCreated;
         public event WindowInitializedEventHandler WindowInitialized;
+        public event WindowExposedEventHandler WindowExposed;
 
         // Public handlers and events end
 
@@ -67,25 +70,41 @@ namespace NetX.XWindows
         {
             this.application = application;
             this.screen = application.Screen;
+            OnWindowInitialized(EventArgs.Empty);
             CreateWindow();
-            OnWindowCreated(EventArgs.Empty);
         }
 
         protected void CreateWindow()
         {
             uint mask = (uint) (XcbCW.XCB_CW_BACK_PIXEL | XcbCW.XCB_CW_EVENT_MASK) ;
-            uint[] valueList = { screen.WhitePixel, (uint)XcbEventMask.EVENT_MASK_EXPOSURE };
+            uint[] valueList = { screen.WhitePixel, (uint)( XcbEventMask.EVENT_MASK_EXPOSURE       | 
+                                                            XcbEventMask.EVENT_MASK_BUTTON_PRESS   |
+                                                            XcbEventMask.EVENT_MASK_BUTTON_RELEASE | 
+                                                            XcbEventMask.EVENT_MASK_POINTER_MOTION |
+                                                            XcbEventMask.EVENT_MASK_ENTER_WINDOW   | 
+                                                            XcbEventMask.EVENT_MASK_LEAVE_WINDOW   |
+                                                            XcbEventMask.EVENT_MASK_KEY_PRESS      | 
+                                                            XcbEventMask.EVENT_MASK_KEY_RELEASE ) };
+                                                            
             windowHandle = LibXcb.xcb_generate_id(application.Connection);
             LibXcb.xcb_create_window (application.Connection,           /* Connection          */
                 screen.RootDepth,                                       /* depth (same as root)*/
                 windowHandle,                                           /* window Id           */
                 screen.Root,                                            /* parent window       */
-                0, 0,                                                   /* x, y                */
+                XPosition, YPosition,                                   /* x, y                */
                 Width, Height,                                          /* width, height       */
                 BorderWidth,                                            /* border_width        */
                 (ushort)WindowClass.WINDOW_CLASS_INPUT_OUTPUT,          /* class               */
                 screen.RootVisual,                                      /* visual              */
                 mask, valueList);                                       /* masks, not used yet */
+
+            OnWindowCreated(EventArgs.Empty);
+        }
+
+        public virtual void OnWindowExposed(EventArgs args)
+        {
+             if (WindowExposed != null)
+            WindowExposed(this, args);
         }
         
         protected internal void Update(uint mask, uint[] valueList)
@@ -96,8 +115,8 @@ namespace NetX.XWindows
         public virtual void Show()
         {
             if(!Initialized)
-                throw new Exception("XWindow.Show() : window not Initialized !");           
-            LibXcb.xcb_map_window(application.Connection, windowHandle);
+                throw new Exception("XWindow.Show() : window not Initialized !");         
+            this.application.Run();
         }
     }
 }

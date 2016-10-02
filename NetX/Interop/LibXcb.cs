@@ -134,6 +134,28 @@ namespace NetX.Interop
 
         // Non-Blocking
         [DllImport(libxcb, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
-        internal static extern IntPtr xcb_poll_for_event(IntPtr xcbConnection);
+        internal static extern IntPtr xcb_poll_for_event(IntPtr xcbConnection, out int error);
+
+        [DllImport(libxcb, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        internal static extern XcbVoidCookie xcb_intern_atom(   IntPtr xcbConnection, 
+                                                                byte only_if_exists, 
+                                                                ushort name_len,
+                                                                [MarshalAs(UnmanagedType.LPStr)] 
+                                                                string name);
+
+         [DllImport(libxcb, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+         internal static extern IntPtr xcb_intern_atom_reply (  IntPtr xcbConnection , 
+                                                                XcbVoidCookie cookie , 
+                                                                IntPtr e);
+
+        [DllImport(libxcb, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        internal static extern XcbVoidCookie xcb_change_property (IntPtr xcbConnection,
+                                                                    byte mode,
+                                                                    uint window,
+                                                                    uint property,
+                                                                    uint type,
+                                                                    byte format,
+                                                                    uint data_len,
+                                                                    ref uint data);
     }
 }

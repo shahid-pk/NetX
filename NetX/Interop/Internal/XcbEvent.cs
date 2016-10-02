@@ -18,7 +18,7 @@ namespace NetX.Interop.Internal
 
     // xcb_expose_event_t
     [StructLayoutAttribute(LayoutKind.Sequential)]
-    internal class XcbExposeEvent 
+    internal struct XcbExposeEvent 
     {
         internal byte response_type;    /* The type of the event, here it is XCB_EXPOSE */
         internal byte pad0;
@@ -34,7 +34,7 @@ namespace NetX.Interop.Internal
 
     // xcb_button_press_event_t and xcb_button_release_event_t 
     [StructLayoutAttribute(LayoutKind.Sequential)]
-    internal class XcbButtonPressReleaseEvent
+    internal struct XcbButtonPressReleaseEvent
     {
         internal byte response_type;         /* The type of the event, here it is xcb_button_press_event_t or xcb_button_release_event_t */
         internal byte detail;
@@ -53,7 +53,7 @@ namespace NetX.Interop.Internal
 
     //xcb_motion_notify_event_t
     [StructLayoutAttribute(LayoutKind.Sequential)]
-    internal class XcbMouseMotionEvent
+    internal struct XcbMouseMotionEvent
     {
         internal byte response_type;    /* The type of the event */
         internal byte detail;
@@ -72,7 +72,7 @@ namespace NetX.Interop.Internal
 
     // xcb_enter_notify_event_t and xcb_leave_notify_event_t
     [StructLayoutAttribute(LayoutKind.Sequential)]
-    internal class XcbMousePointerEnterLeaveEvent
+    internal struct XcbMousePointerEnterLeaveEvent
     {
         internal byte response_type;        /* The type of the event */
         internal byte detail;
@@ -92,7 +92,7 @@ namespace NetX.Interop.Internal
 
     // xcb_key_press_event_t and xcb_key_release_event_t
     [StructLayoutAttribute(LayoutKind.Sequential)]
-    internal class XcbKeyPressReleaseEvent
+    internal struct XcbKeyPressReleaseEvent
     {
         internal byte response_type;    /* The type of the event */
         internal byte detail;
@@ -107,5 +107,34 @@ namespace NetX.Interop.Internal
         internal short event_y;
         internal ushort state;
         internal byte same_screen;
+    }
+
+     // xcb_client_message_event_t
+    [StructLayoutAttribute(LayoutKind.Sequential)]
+    internal struct XcbClientMessageEvent 
+    {
+        internal byte response_type;
+        internal byte format;
+        internal ushort sequence;
+        internal uint window;
+        internal uint type;
+        internal XcbClientMessageDate data;
+    }
+
+    //xcb_client_message_data_t union
+    [StructLayout(LayoutKind.Explicit)]
+    internal struct XcbClientMessageDate 
+    {
+        [FieldOffset(0)]
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst=20)]
+        internal byte[] data8;
+
+        [FieldOffset(0)]
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst=10)]
+        internal ushort[] data16;
+
+        [FieldOffset(0)]
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst=5)]
+        internal uint[] data32;
     }
 }

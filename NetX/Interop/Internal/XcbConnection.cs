@@ -282,6 +282,17 @@ namespace NetX.Interop.Internal
         internal uint inc;
     }
 
+    //xcb_intern_atom_reply_t
+    [StructLayout(LayoutKind.Sequential)]
+    internal class XcbInternAtomReply 
+    {
+        internal byte response_type;
+        internal byte pad0;
+        internal ushort sequence;
+        internal uint length;
+        internal uint atom;
+    }
+
     // enum workarounds
     internal enum Workarounds 
     {
