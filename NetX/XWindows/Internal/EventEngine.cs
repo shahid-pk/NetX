@@ -30,6 +30,7 @@ namespace NetX.XWindows.Internal
                 {
                     case (int)XcbEventType.XCB_EXPOSE :
                         window.OnWindowExposed(EventArgs.Empty);
+                        application.Flush();
                     break;
 
                     case (int)XcbEventType.XCB_BUTTON_PRESS :

@@ -48,8 +48,7 @@ namespace NetX.XWindows
 
         ~XApplication()
         {
-            LibXcb.xcb_disconnect(xcbConnection);
-            Dispose(false);
+            Dispose(true);
         }
 
         // This method should be overriden with care
@@ -144,16 +143,21 @@ namespace NetX.XWindows
 
         protected virtual void Dispose(bool disposing)
         {
-            // deallocate memmory accessed by xcb_connection_t structure
-            if (disposing)
-            { 
-                LibXcb.xcb_disconnect(xcbConnection);
-                if(xcbConnection != IntPtr.Zero)
-                    xcbConnection = IntPtr.Zero;      // if we reach here our IntPtr is refrencing invalid memmory
+            if(!disposed)
+            {
+                // deallocate memmory accessed by xcb_connection_t structure
+                if (disposing)
+                { 
+                    LibXcb.xcb_disconnect(xcbConnection);
+
+                    // if we reach here our IntPtr is refrencing invalid memmory
+                    if(xcbConnection != IntPtr.Zero)
+                        xcbConnection = IntPtr.Zero;  
+                }
 
                 // Flip disposed to true so we don't try do de-allocate
-                // already de-allocated memmory
-                disposed = true;                        
+                // already de-allocated memmory 
+                disposed = true;
             }
         }
     }

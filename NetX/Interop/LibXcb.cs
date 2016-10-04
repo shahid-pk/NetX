@@ -77,6 +77,9 @@ namespace NetX.Interop
                                                             uint[] value_list);
         
         [DllImport(libxcb, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        internal static extern XcbVoidCookie xcb_free_gc(IntPtr xcbConnection, uint gcHandle);
+        
+        [DllImport(libxcb, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         internal static extern XcbVoidCookie xcb_poly_point (   IntPtr xcbConnection,
                                                                 byte cordinateMode,          
                                                                 uint drawable,
@@ -157,5 +160,24 @@ namespace NetX.Interop
                                                                     byte format,
                                                                     uint data_len,
                                                                     ref uint data);
+
+        [DllImport(libxcb, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        internal static extern XcbVoidCookie xcb_open_font (IntPtr xcbConnection, uint fid, ushort name_len,
+                                                            [MarshalAs(UnmanagedType.LPStr)]
+                                                            string name);
+        
+        [DllImport(libxcb, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        internal static extern XcbVoidCookie xcb_close_font(IntPtr xcbConnection, uint fid);
+
+        [DllImport(libxcb, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        internal static extern XcbVoidCookie xcb_image_text_8 ( IntPtr xcbConnection,
+                                                                byte string_len,
+                                                                uint drawable,
+                                                                uint gc,
+                                                                short x,
+                                                                short y,
+                                                                [MarshalAs(UnmanagedType.LPStr)]
+                                                                string write);
+
     }
 }

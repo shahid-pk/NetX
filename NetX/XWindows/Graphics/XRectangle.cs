@@ -47,13 +47,25 @@ namespace NetX.XWindows.Graphics
         }
                 
 
-        public void Draw(XWindow window, XGraphicsContext graphicsContext)
+        public void Draw(XApplication application)
         {
-            LibXcb.xcb_poly_rectangle( graphicsContext.application.Connection, 
-                                        window.windowHandle, 
-                                        graphicsContext.gcHandle, 
+            var context = new XGraphicsContext(application);
+            LibXcb.xcb_poly_rectangle(  application.Connection, 
+                                        application.MainWindow.windowHandle, 
+                                        context.gcHandle, 
                                         rectsToDraw,
                                         rectangles);
+        }
+
+        // fill rectangles
+        public void Fill(XApplication application)
+        {
+            var context = new XGraphicsContext(application);
+            LibXcb.xcb_poly_fill_rectangle( application.Connection, 
+                                            application.MainWindow.windowHandle, 
+                                            context.gcHandle, 
+                                            rectsToDraw,
+                                            rectangles);
         }
     }
 }
