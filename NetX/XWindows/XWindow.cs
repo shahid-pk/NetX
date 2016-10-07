@@ -4,11 +4,13 @@ using NetX.XWindows.Internal;
 
 namespace NetX.XWindows
 {
-    public class XWindow
+    public class XWindow : IDisposable
     {
         private XApplication application;
 
         private XScreen screen;
+
+        private bool disposed = false;
 
         internal uint windowHandle;
 
@@ -47,6 +49,11 @@ namespace NetX.XWindows
             Initialized = false;
         }
 
+        ~XWindow()
+        {
+            Dispose(true);
+        }
+
         public XWindow(XApplication application)
         {
             Initialize(application);
@@ -72,6 +79,14 @@ namespace NetX.XWindows
             this.screen = application.Screen;
             OnWindowInitialized(EventArgs.Empty);
             CreateWindow();
+
+            this.application.ApplicationTerminated += (obj,arguments) => {
+                if(!disposed)
+                {
+                    Dispose(true);
+                    GC.SuppressFinalize(this);
+                }
+            };
         }
 
         protected void CreateWindow()
@@ -117,6 +132,25 @@ namespace NetX.XWindows
             if(!Initialized)
                 throw new Exception("XWindow.Show() : window not Initialized !");         
             this.application.Run();
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposed)
+            {
+                if (disposing)
+                {
+                    LibXcb.xcb_destroy_window(application.Connection,windowHandle);
+                }
+                disposed = true;
+            }
+        }
+
+        public void Dispose()
+        {
+            // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
+            Dispose(true);
+            GC.SuppressFinalize(this);
         }
     }
 }

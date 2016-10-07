@@ -45,4 +45,48 @@ namespace NetX.Interop.Internal
         internal short angle1;  /* Angle at which the arc begins */
         internal short angle2;  /* Angle at which the arc ends */
     }
+
+    //xcb_visualtype_t
+    [StructLayout(LayoutKind.Sequential)]
+    internal class XcbVisualType
+    {
+        internal uint visual_id;
+        internal byte _class;
+        internal byte bits_per_rgb_value;
+        internal ushort colormap_entries;
+        internal uint red_mask;
+        internal uint green_mask;
+        internal uint blue_mask;
+
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst=4)]
+        internal byte[] pad0;
+    }
+
+    //xcb_renderdirect_format
+    [StructLayout(LayoutKind.Sequential)]
+    internal struct XcbRenderDirectFormat
+    {
+        internal ushort red_shift;
+        internal ushort red_mask;
+        internal ushort green_shift;
+        internal ushort green_mask;
+        internal ushort blue_shift;
+        internal ushort blue_mask;
+        internal ushort alpha_shift;
+        internal ushort alpha_mask;
+    }
+
+    //xcb_pictforminfo_t
+    internal struct XcbPictFormInfo
+    {
+        internal uint id;
+        internal byte type;
+        internal byte depth;
+
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst=2)]
+        internal byte[] pad0;
+
+        internal XcbRenderDirectFormat direct;
+        internal uint colormap;
+    }
 }
