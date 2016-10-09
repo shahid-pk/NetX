@@ -23,7 +23,7 @@ namespace NetX.Interop
 
         // checks if error has occured for this context
         [DllImport(libCairo)]
-        internal static extern CairoStatus	cairo_status (IntPtr cairoContext);
+        internal static extern CairoStatus cairo_status (IntPtr cairoContext);
 
         // Makes a copy of the current state of cr and saves it on an internal stack of saved states for cr .
         // When cairo_restore() is called, cr will be restored to the saved state. Multiple calls to cairo_save()
@@ -31,6 +31,37 @@ namespace NetX.Interop
         // paired cairo_save().
         [DllImport(libCairo)]
         internal static extern void	cairo_save (IntPtr cairoContext);
+
+        [DllImport(libCairo)]
+        internal static extern void cairo_set_source_rgb (  IntPtr cairoContext,
+                                                            double red,
+                                                            double green,
+                                                            double blue);
+        
+        [DllImport(libCairo)]
+        internal static extern void cairo_set_source_rgba ( IntPtr cairoContext,
+                                                            double red,
+                                                            double green,
+                                                            double blue,
+                                                            double alpha);
+        
+        [DllImport(libCairo)]
+        internal static extern void cairo_paint (IntPtr cairoContext);
+
+        [DllImport(libCairo)]
+        internal static extern void cairo_fill (IntPtr cairoContext);
+
+        [DllImport(libCairo)]
+        internal static extern void cairo_paint_with_alpha (IntPtr cairoContext, double alpha);
+
+        [DllImport(libCairo)]
+        internal static extern void cairo_stroke (IntPtr cairoContext);
+
+        [DllImport(libCairo)]
+        internal static extern void cairo_set_line_width (IntPtr cairoContext, double width);
+
+        [DllImport(libCairo)]
+        internal static extern double cairo_get_line_width (IntPtr cairoContext);
 
         // Restores cr to the state saved by a preceding call to cairo_save() 
         // and removes that state from the stack of saved states.
@@ -490,6 +521,88 @@ namespace NetX.Interop
 
         // end matrix transformation api's
 
+        //////////////////////
+        // cairo_text api's //
+        //////////////////////
+
+        [DllImport(libCairo)] 
+        internal static extern void cairo_select_font_face (IntPtr cairoContext, 
+                                                            [MarshalAs(UnmanagedType.LPStr)] string fontFamily,
+                                                            CairoFontSlant slant,
+                                                            CairoFontWeight weight);
+
+        [DllImport(libCairo)] 
+        internal static extern void cairo_set_font_size (IntPtr cairoContext, double size);
+
+        [DllImport(libCairo)] 
+        internal static extern void cairo_set_font_matrix (IntPtr cairoContext, ref CairoMatrix matrix);
+
+        [DllImport(libCairo)] 
+        internal static extern void cairo_get_font_matrix (IntPtr cairoContext, out CairoMatrix matrix);
+
+        [DllImport(libCairo)] 
+        internal static extern void cairo_set_font_options ();
+
+        [DllImport(libCairo)] 
+        internal static extern void cairo_get_font_options ();
+
+        [DllImport(libCairo)] 
+        internal static extern void cairo_set_font_face ();
+
+        [DllImport(libCairo)] 
+        internal static extern IntPtr cairo_get_font_face ();
+
+        [DllImport(libCairo)] 
+        internal static extern void cairo_set_scaled_font ();
+
+        [DllImport(libCairo)] 
+        internal static extern IntPtr cairo_get_scaled_font ();
+
+        [DllImport(libCairo)] 
+        internal static extern void cairo_show_text ();
+
+        [DllImport(libCairo)] 
+        internal static extern void cairo_show_glyphs ();
+
+        [DllImport(libCairo)] 
+        internal static extern void cairo_show_text_glyphs ();
+
+        [DllImport(libCairo)] 
+        internal static extern void cairo_font_extents ();
+
+        [DllImport(libCairo)] 
+        internal static extern void cairo_text_extents ();
+
+        [DllImport(libCairo)] 
+        internal static extern void cairo_glyph_extents ();
+
+        [DllImport(libCairo)] 
+        internal static extern IntPtr cairo_toy_font_face_create ();
+
+        [DllImport(libCairo)] 
+        [return: MarshalAs(UnmanagedType.LPStr)]
+        internal static extern string cairo_toy_font_face_get_family ();
+
+        [DllImport(libCairo)] 
+        internal static extern CairoFontSlant cairo_toy_font_face_get_slant ();
+
+        [DllImport(libCairo)] 
+        internal static extern CairoFontWeight cairo_toy_font_face_get_weight ();
+
+        [DllImport(libCairo)] 
+        internal static extern IntPtr cairo_glyph_allocate ();
+
+        [DllImport(libCairo)] 
+        internal static extern void cairo_glyph_free ();
+
+        [DllImport(libCairo)] 
+        internal static extern IntPtr cairo_text_cluster_allocate ();
+
+        [DllImport(libCairo)] 
+        internal static extern void cairo_text_cluster_free ();
+
+        // end cairo_font api's
+
         ///////////////////////////
         // cairo_surface_t api's //
         ///////////////////////////
@@ -520,6 +633,15 @@ namespace NetX.Interop
         // Decrease cairo_surface_t refrence by 1 , if refrences are zero it frees unmanaged resources
         [DllImport(libCairo)]
         internal static extern void cairo_surface_destroy (IntPtr cairoSurface);
+
+        [DllImport(libCairo)]
+        internal static extern void cairo_surface_finish (IntPtr cairoSurface);
+
+        [DllImport(libCairo)]
+        internal static extern CairoStatus cairo_surface_status (IntPtr cairoSurface);
+
+        [DllImport(libCairo)]
+        internal static extern uint cairo_surface_get_reference_count (IntPtr cairoSurface);
 
         [DllImport(libCairo)]
         internal static extern IntPtr cairo_xcb_surface_create_for_bitmap ( IntPtr xcbConnection,

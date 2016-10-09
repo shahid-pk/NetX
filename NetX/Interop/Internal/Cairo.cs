@@ -159,4 +159,30 @@ namespace NetX.Interop.Internal
         internal int x, y;
         internal int width, height;
     }
+
+    internal enum CairoFontSlant
+    {
+        CAIRO_FONT_SLANT_NORMAL,
+        CAIRO_FONT_SLANT_ITALIC,
+        CAIRO_FONT_SLANT_OBLIQUE
+    }
+
+    internal enum CairoFontWeight
+    {
+        CAIRO_FONT_WEIGHT_NORMAL,
+        CAIRO_FONT_WEIGHT_BOLD
+    }
+
+    // for cairo_text_cluster_t
+    [StructLayout(LayoutKind.Sequential)]
+    internal struct CairoTextCluster
+    {
+        internal int num_bytes;
+        internal int num_glyphs;
+    }
+
+    internal enum CairoTextClusterFlag
+    {
+        CAIRO_TEXT_CLUSTER_FLAG_BACKWARD
+    }
 }

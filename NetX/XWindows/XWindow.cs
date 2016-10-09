@@ -1,6 +1,7 @@
 using System;
 using NetX.Interop;
 using NetX.XWindows.Internal;
+using NetX.XWindows.Events;
 
 namespace NetX.XWindows
 {
@@ -19,8 +20,8 @@ namespace NetX.XWindows
         // Public properties
         public short XPosition {get;set;} = 0;
         public short YPosition {get;set;} = 0;
-        public ushort Width {get;set;} = 400;
-        public ushort Height {get;set;} = 300;
+        public int Width {get;set;} = 400;
+        public int Height {get;set;} = 300;
 
         // Parent window
         public uint Parent {get;set;}
@@ -36,11 +37,14 @@ namespace NetX.XWindows
 
         public delegate void WindowInitializedEventHandler(object sender, EventArgs e);
 
-        public delegate void WindowExposedEventHandler(object sender, EventArgs e);
+        public delegate void WindowExposedEventHandler(object sender, ExposeEventArgs e);
+
+        public delegate void WindowMaximizedEventHandler(object sender, EventArgs e);
 
         public event WindowCreatedEventHandler WindowCreated;
         public event WindowInitializedEventHandler WindowInitialized;
         public event WindowExposedEventHandler WindowExposed;
+        public event WindowMaximizedEventHandler WindowMaximized;
 
         // Public handlers and events end
 
@@ -92,7 +96,8 @@ namespace NetX.XWindows
         protected void CreateWindow()
         {
             uint mask = (uint) (XcbCW.XCB_CW_BACK_PIXEL | XcbCW.XCB_CW_EVENT_MASK) ;
-            uint[] valueList = { screen.WhitePixel, (uint)( XcbEventMask.EVENT_MASK_EXPOSURE       | 
+            uint[] valueList = { screen.WhitePixel, (uint)( XcbEventMask.EVENT_MASK_EXPOSURE       |
+                                                            XcbEventMask.EVENT_MASK_PROPERTY_CHANGE|
                                                             XcbEventMask.EVENT_MASK_BUTTON_PRESS   |
                                                             XcbEventMask.EVENT_MASK_BUTTON_RELEASE | 
                                                             XcbEventMask.EVENT_MASK_POINTER_MOTION |
@@ -107,7 +112,7 @@ namespace NetX.XWindows
                 windowHandle,                                           /* window Id           */
                 screen.Root,                                            /* parent window       */
                 XPosition, YPosition,                                   /* x, y                */
-                Width, Height,                                          /* width, height       */
+                (ushort)Width,(ushort)Height,                                          /* width, height       */
                 BorderWidth,                                            /* border_width        */
                 (ushort)WindowClass.WINDOW_CLASS_INPUT_OUTPUT,          /* class               */
                 screen.RootVisual,                                      /* visual              */
@@ -116,10 +121,22 @@ namespace NetX.XWindows
             OnWindowCreated(EventArgs.Empty);
         }
 
-        public virtual void OnWindowExposed(EventArgs args)
+        public virtual void OnWindowExposed(ExposeEventArgs args)
         {
-             if (WindowExposed != null)
-            WindowExposed(this, args);
+            if (!(args == EventArgs.Empty))
+            {
+                Width = args.Width;
+                Height = args.Height;
+            }
+
+            if (WindowExposed != null)
+                WindowExposed(this, args);
+        }
+
+        public virtual void OnWindowMaximized(EventArgs args)
+        {
+            if (WindowMaximized != null)
+                WindowMaximized(this,args);
         }
         
         protected internal void Update(uint mask, uint[] valueList)
@@ -132,7 +149,7 @@ namespace NetX.XWindows
             if(!Initialized)
                 throw new Exception("XWindow.Show() : window not Initialized !");         
             this.application.Run();
-        }
+        }   
 
         protected virtual void Dispose(bool disposing)
         {

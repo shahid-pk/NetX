@@ -27,10 +27,16 @@ namespace NetX.Interop
 
         // return XcbSetupIterator
         [DllImport(libxcb, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
-        internal static extern XcbScreenIterator xcb_setup_roots_iterator(IntPtr xcbSetup);
+        internal static extern XcbIterator xcb_setup_roots_iterator(IntPtr xcbSetup);
 
         [DllImport(libxcb, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
-        internal static extern void xcb_screen_next (ref XcbScreenIterator xcbScreenIterator);
+        internal static extern void xcb_screen_next (ref XcbIterator xcbScreenIterator);
+
+        [DllImport(libxcb, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        internal static extern XcbIterator xcb_screen_allowed_depths_iterator(IntPtr xcbScreen);
+
+        [DllImport(libxcb, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        internal static extern XcbIterator xcb_depth_visuals_iterator(IntPtr xcbDepth);
 
         [DllImport(libxcb, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         internal static extern uint xcb_generate_id(IntPtr xcbConnection);
@@ -58,6 +64,24 @@ namespace NetX.Interop
 
         [DllImport(libxcb, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         internal static extern XcbVoidCookie xcb_map_window (IntPtr xcbConnection, uint window);
+
+
+        [DllImport(libxcb, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        internal static extern XcbVoidCookie xcb_get_property(  IntPtr xcbConnection, 
+                                                                byte _delete, 
+                                                                uint window, 
+                                                                uint property, 
+                                                                uint type, 
+                                                                uint long_offset,
+	                                                            uint long_length);
+        
+        [DllImport(libxcb, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)] 
+        internal static extern IntPtr xcb_get_property_reply (  IntPtr xcbConnection, 
+                                                                XcbVoidCookie cookie,                      
+                                                                IntPtr e);
+
+        [DllImport(libxcb, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        internal static extern IntPtr xcb_get_property_value (IntPtr xcbGetPropertyReply);
                                                                 
         [DllImport(libxcb, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         internal static extern XcbVoidCookie xcb_destroy_window(IntPtr xcbConnection, uint windowHandle);

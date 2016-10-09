@@ -1,5 +1,6 @@
 ﻿using System;
 using NetX.XWindows;
+using NetX.XWindows.Graphics;
 
 namespace ConsoleApplication
 {
@@ -11,9 +12,34 @@ namespace ConsoleApplication
             {
                 var application = new XApplication();
                 application.MainWindow = new XWindow();
+                var surface = new CairoSurface(application);
+                var cr = new CairoContext(surface);
                 application.MainWindow.WindowExposed += (o,arguments) => {
+                        
+                        var width = arguments.Width;
+                        var height = arguments.Height;
+                        surface.SetSize(width,height);
+                        cr.SetSourceRGB(0, 1, 0);
+ 			            cr.Paint();
+
+ 			            cr.SetSourceRGB(1, 0, 0);
+ 			            cr.MoveTo(0, 0);
+ 			            cr.LineTo(width, 0);
+ 			            cr.LineTo(width, height);
+ 			            cr.ClosePath();
+ 			            cr.Fill();
+ 			            cr.SetSourceRGB(0, 0, 1);
+ 			            cr.LineWidth = 20;
+ 			            cr.MoveTo(0, height);
+ 			            cr.LineTo(width, 0);
+ 			            cr.Stroke();
+			            surface.Flush();
+
+                    // hello world below
+                    /*
                     var write = new XFont(application,"7x13");
                     write.Write("Hello World !");
+                    */
                 };
                 application.Run();
             }

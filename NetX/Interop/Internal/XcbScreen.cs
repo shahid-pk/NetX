@@ -27,7 +27,7 @@ namespace NetX.Interop.Internal
 
     // struct xcb_screen_iterator_t
     [StructLayout(LayoutKind.Sequential)]
-    internal struct XcbScreenIterator
+    internal struct XcbIterator
     {
         internal IntPtr data;
         internal int rem;

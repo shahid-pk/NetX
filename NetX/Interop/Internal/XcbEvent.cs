@@ -137,4 +137,36 @@ namespace NetX.Interop.Internal
         [MarshalAs(UnmanagedType.ByValArray, SizeConst=5)]
         internal uint[] data32;
     }
+
+    // for xcb_get_property_reply_t
+    [StructLayoutAttribute(LayoutKind.Sequential)]
+    internal struct XcbGetPropertyReply 
+    {
+        internal byte response_type;
+        internal byte format;
+        internal ushort sequence;
+        internal uint length;
+        internal uint type;
+        internal uint bytes_after;
+        internal uint value_len;
+
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst=12)]
+        internal byte[] pad0;
+     }
+
+     // for  xcb_property_notify_event_t
+     [StructLayoutAttribute(LayoutKind.Sequential)]
+     internal struct XcbPropertyNotifyEvent 
+     {
+            internal byte response_type;
+            internal byte pad0;
+            internal ushort sequence;
+            internal uint window;
+            internal uint atom;
+            internal uint  time;
+            internal byte state;
+
+            [MarshalAs(UnmanagedType.ByValArray, SizeConst=12)]
+            internal byte[] pad1;
+     }
 }

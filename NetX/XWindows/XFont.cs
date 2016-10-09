@@ -25,14 +25,13 @@ namespace NetX.XWindows
                 if(!disposed)
                 {
                     Dispose(true);
-                    GC.SuppressFinalize(this);
                 }
             };
         }
 
         ~XFont()
         {
-            Dispose(true);
+            Dispose(false);
         }
 
         private void CreateFont(XApplication application, string fontName)

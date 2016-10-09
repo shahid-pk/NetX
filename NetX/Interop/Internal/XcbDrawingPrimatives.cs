@@ -77,6 +77,7 @@ namespace NetX.Interop.Internal
     }
 
     //xcb_pictforminfo_t
+    [StructLayout(LayoutKind.Sequential)]
     internal struct XcbPictFormInfo
     {
         internal uint id;

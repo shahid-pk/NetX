@@ -2,6 +2,7 @@ using System;
 using System.Runtime.InteropServices;
 using NetX.Interop;
 using NetX.Interop.Internal;
+using NetX.XWindows.Events;
 
 namespace NetX.XWindows.Internal
 {
@@ -29,7 +30,8 @@ namespace NetX.XWindows.Internal
                 switch(evnt.response_type & ~0x80)
                 {
                     case (int)XcbEventType.XCB_EXPOSE :
-                        window.OnWindowExposed(EventArgs.Empty);
+                        var xee = Marshal.PtrToStructure<XcbExposeEvent>(systemEvent);
+                        window.OnWindowExposed(new ExposeEventArgs(xee.width,xee.height));
                         application.Flush();
                     break;
 
@@ -47,6 +49,26 @@ namespace NetX.XWindows.Internal
                         var xcme = Marshal.PtrToStructure<XcbClientMessageEvent>(systemEvent);
                         if(xcme.data.data32[0] == application.quitToken)
                             application.OnApplicationTerminated();
+                    break;
+
+                    case (int)XcbEventType.XCB_PROPERTY_NOTIFY :
+                    /*
+                        var xpne = Marshal.PtrToStructure<XcbPropertyNotifyEvent>(systemEvent);
+                        if(xpne.atom == application.ReadWMState("_NET_WM_STATE"))
+                            {
+                                var val = application.GetValueForProperty(xpne.atom);
+                                if(val == application.ReadWMState("_NET_WM_STATE_HIDDEN"))
+                                    {
+                                        Console.WriteLine("window minimized");
+                                    }
+                                 else
+                                    {
+                                        if ( val == application.ReadWMState("_NET_WM_STATE_MAXIMIZED_VERT") || 
+                                             val == application.ReadWMState("_NET_WM_STATE_MAXIMIZED_HORZ"))
+                                            Console.WriteLine("Maximized");
+                                    }
+                            }
+                     */
                     break;
                     
                     default :
