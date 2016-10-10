@@ -12,16 +12,17 @@ namespace ConsoleApplication
             {
                 var application = new XApplication();
                 application.MainWindow = new XWindow();
+
                 var surface = new CairoSurface(application);
                 var cr = new CairoContext(surface);
+
                 application.MainWindow.WindowExposed += (o,arguments) => {
-                        
-                        var width = arguments.Width;
-                        var height = arguments.Height;
+
+                        var width = arguments.Width + arguments.X;
+                        var height = arguments.Height + arguments.Y;
                         surface.SetSize(width,height);
                         cr.SetSourceRGB(0, 1, 0);
  			            cr.Paint();
-
  			            cr.SetSourceRGB(1, 0, 0);
  			            cr.MoveTo(0, 0);
  			            cr.LineTo(width, 0);

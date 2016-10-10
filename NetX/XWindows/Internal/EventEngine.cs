@@ -10,15 +10,27 @@ namespace NetX.XWindows.Internal
     {
         private IntPtr systemEvent;
         private XApplication application;
-
         private XWindow window;
+
+        private uint wmState;
+        private uint wmStateHidden;
+        private uint wmStateMaxVert;
+        private uint wmStateMaxHorz;
 
         internal EventEngine(XApplication application)
         {
             this.application = application;
         }
 
-        internal void NonBlockingEventLoop()
+        private void QueryWMState()
+        {
+            wmState = application.ReadWMState("_NET_WM_STATE");
+            wmStateHidden = application.ReadWMState("_NET_WM_STATE_HIDDEN");
+            wmStateMaxVert = application.ReadWMState("_NET_WM_STATE_MAXIMIZED_VERT");
+            wmStateMaxHorz = application.ReadWMState("_NET_WM_STATE_MAXIMIZED_HORZ");
+        }
+
+        internal void BlockingEventLoop()
         {
             do
             {
@@ -31,7 +43,7 @@ namespace NetX.XWindows.Internal
                 {
                     case (int)XcbEventType.XCB_EXPOSE :
                         var xee = Marshal.PtrToStructure<XcbExposeEvent>(systemEvent);
-                        window.OnWindowExposed(new ExposeEventArgs(xee.width,xee.height));
+                        window.OnWindowExposed(new ExposeEventArgs(xee.width,xee.height,xee.x,xee.y));
                         application.Flush();
                     break;
 
@@ -52,23 +64,21 @@ namespace NetX.XWindows.Internal
                     break;
 
                     case (int)XcbEventType.XCB_PROPERTY_NOTIFY :
-                    /*
                         var xpne = Marshal.PtrToStructure<XcbPropertyNotifyEvent>(systemEvent);
-                        if(xpne.atom == application.ReadWMState("_NET_WM_STATE"))
+                        QueryWMState();
+                        if(xpne.atom == wmState)
+                        {
+                            var val = application.GetValueForProperty(wmState);
+                            if(val == wmStateHidden)
                             {
-                                var val = application.GetValueForProperty(xpne.atom);
-                                if(val == application.ReadWMState("_NET_WM_STATE_HIDDEN"))
-                                    {
-                                        Console.WriteLine("window minimized");
-                                    }
-                                 else
-                                    {
-                                        if ( val == application.ReadWMState("_NET_WM_STATE_MAXIMIZED_VERT") || 
-                                             val == application.ReadWMState("_NET_WM_STATE_MAXIMIZED_HORZ"))
-                                            Console.WriteLine("Maximized");
-                                    }
+                                // Don't have anything to do here yet
                             }
-                     */
+                            else
+                            {
+                                if(val == wmStateMaxVert || wmState == wmStateMaxHorz)
+                                    window.OnWindowMaximized(EventArgs.Empty);
+                            }
+                        }
                     break;
                     
                     default :

@@ -145,7 +145,7 @@ namespace NetX.XWindows
             LibXcb.xcb_map_window(this.Connection,MainWindow.windowHandle);
             Flush();
             eventEngine.Register(MainWindow);
-            eventEngine.NonBlockingEventLoop();
+            eventEngine.BlockingEventLoop();
         }
 
         public void Dispose()
@@ -181,17 +181,26 @@ namespace NetX.XWindows
 
         internal uint GetValueForProperty(uint atom)
         {
-           var cookie = LibXcb.xcb_get_property(Connection,
-                                                0,
-                                                MainWindow.windowHandle,
-                                                atom,
-                                                (uint)XcbAtom.XCB_ATOM_ATOM,
-                                                32,
-                                                0);
-            
-            var reply = LibXcb.xcb_get_property_reply(Connection,cookie,IntPtr.Zero);
-            var val = Marshal.PtrToStructure<uint>(LibXcb.xcb_get_property_value(reply));
+            uint val = 7;
+            var cookie = LibXcb.xcb_get_property(   Connection,
+                                                    0,
+                                                    MainWindow.windowHandle,
+                                                    atom,
+                                                    (uint)XcbAtom.XCB_ATOM_ATOM,
+                                                    0,
+                                                    32);
 
+            var reply = LibXcb.xcb_get_property_reply(Connection,cookie,IntPtr.Zero);
+            try
+            {
+                var ptr = LibXcb.xcb_get_property_value(reply);
+                val = Marshal.PtrToStructure<uint>(ptr);
+            }
+            catch 
+            {
+                throw new Exception("XApplication:GetValueForProperty: Could not Marshal");
+            }
+            
             return val;
         }        
 

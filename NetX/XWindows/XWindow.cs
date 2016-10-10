@@ -125,8 +125,8 @@ namespace NetX.XWindows
         {
             if (!(args == EventArgs.Empty))
             {
-                Width = args.Width;
-                Height = args.Height;
+                Width = args.Width + args.X;
+                Height = args.Height + args.Y; 
             }
 
             if (WindowExposed != null)
