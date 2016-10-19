@@ -1,6 +1,8 @@
 using System;
 using System.Runtime.InteropServices;
 using NetX.Interop;
+using NetX.Internal;
+using NetX.Windows;
 using NetX.Interop.Internal;
 using NetX.XWindows.Events;
 
@@ -11,6 +13,8 @@ namespace NetX.XWindows.Internal
         private IntPtr systemEvent;
         private XApplication application;
         private XWindow window;
+
+        private Renderer renderer;
 
         private uint wmState;
         private uint wmStateHidden;
@@ -30,6 +34,12 @@ namespace NetX.XWindows.Internal
             wmStateMaxHorz = application.ReadWMState("_NET_WM_STATE_MAXIMIZED_HORZ");
         }
 
+        private void Draw(Visual visual)
+        {
+            if(visual != null)
+                renderer.Render(visual);
+        }
+
         internal void BlockingEventLoop()
         {
             do
@@ -44,6 +54,8 @@ namespace NetX.XWindows.Internal
                     case (int)XcbEventType.XCB_EXPOSE :
                         var xee = Marshal.PtrToStructure<XcbExposeEvent>(systemEvent);
                         window.OnWindowExposed(new ExposeEventArgs(xee.width,xee.height,xee.x,xee.y));
+                        if(window.Content != null)
+                            Draw(window.Content);
                         application.Flush();
                     break;
 
@@ -60,7 +72,9 @@ namespace NetX.XWindows.Internal
                     case (int)XcbEventType.XCB_CLIENT_MESSAGE :
                         var xcme = Marshal.PtrToStructure<XcbClientMessageEvent>(systemEvent);
                         if(xcme.data.data32[0] == application.quitToken)
+                        {
                             application.OnApplicationTerminated();
+                        }
                     break;
 
                     case (int)XcbEventType.XCB_PROPERTY_NOTIFY :
@@ -93,7 +107,9 @@ namespace NetX.XWindows.Internal
 
         internal void Register(XWindow window)
         {
-            //todo: implement for other controls
+            if(renderer == null)
+                renderer = new Renderer(this.application);
+            // todo: implement for other controls
             // Note: In order to register for events your control or window needs to 
             // expose On"EventType"Event method that recieve event args for the required event
             // e.g to recieve expose event, a control or window needs to have OnExposeEvent(ExposeEventArgs args)

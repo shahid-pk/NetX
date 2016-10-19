@@ -1,11 +1,14 @@
 using System;
+using System.Runtime.InteropServices;
 using NetX.Interop;
+using NetX.Interop.Internal;
 using NetX.XWindows.Internal;
 using NetX.XWindows.Events;
+using NetX.Windows;
 
 namespace NetX.XWindows
 {
-    public class XWindow : IDisposable
+    public class XWindow : Visual ,IDisposable
     {
         private XApplication application;
 
@@ -14,6 +17,8 @@ namespace NetX.XWindows
         private bool disposed = false;
 
         internal uint windowHandle;
+
+        public virtual Visual Content {get; set;}
 
         protected internal bool Initialized {get;set;}
 
@@ -63,6 +68,11 @@ namespace NetX.XWindows
             Initialize(application);
             OnWindowInitialized(EventArgs.Empty);
             Initialized = true;
+            
+            if(application.MainWindow == null)
+            {
+                application.MainWindow = this;
+            }
         }
 
         public virtual void OnWindowCreated(EventArgs args)
@@ -83,19 +93,15 @@ namespace NetX.XWindows
             this.screen = application.Screen;
             OnWindowInitialized(EventArgs.Empty);
             CreateWindow();
-
-            this.application.ApplicationTerminated += (obj,arguments) => {
-                if(!disposed)
-                {
-                    Dispose(true);
-                    GC.SuppressFinalize(this);
-                }
-            };
         }
 
         protected void CreateWindow()
         {
-            uint mask = (uint) (XcbCW.XCB_CW_BACK_PIXEL | XcbCW.XCB_CW_EVENT_MASK) ;
+            windowHandle = LibXcb.xcb_generate_id(application.Connection);
+
+            var vis = Marshal.PtrToStructure<XcbVisualType>(application.VisualType);
+
+            uint mask = (uint) (XcbCW.XCB_CW_BACK_PIXEL | XcbCW.XCB_CW_EVENT_MASK ) ;
             uint[] valueList = { screen.WhitePixel, (uint)( XcbEventMask.EVENT_MASK_EXPOSURE       |
                                                             XcbEventMask.EVENT_MASK_PROPERTY_CHANGE|
                                                             XcbEventMask.EVENT_MASK_BUTTON_PRESS   |
@@ -105,19 +111,18 @@ namespace NetX.XWindows
                                                             XcbEventMask.EVENT_MASK_LEAVE_WINDOW   |
                                                             XcbEventMask.EVENT_MASK_KEY_PRESS      | 
                                                             XcbEventMask.EVENT_MASK_KEY_RELEASE ) };
-                                                            
-            windowHandle = LibXcb.xcb_generate_id(application.Connection);
+
             LibXcb.xcb_create_window (application.Connection,           /* Connection          */
                 screen.RootDepth,                                       /* depth (same as root)*/
                 windowHandle,                                           /* window Id           */
                 screen.Root,                                            /* parent window       */
                 XPosition, YPosition,                                   /* x, y                */
-                (ushort)Width,(ushort)Height,                                          /* width, height       */
+                (ushort)Width,(ushort)Height,                           /* width, height       */
                 BorderWidth,                                            /* border_width        */
                 (ushort)WindowClass.WINDOW_CLASS_INPUT_OUTPUT,          /* class               */
-                screen.RootVisual,                                      /* visual              */
+                vis.visual_id,                                          /* visual              */
                 mask, valueList);                                       /* masks, not used yet */
-
+            
             OnWindowCreated(EventArgs.Empty);
         }
 

@@ -35,8 +35,11 @@ namespace NetX.XWindows
                 { 
                     window = value;
                     if(!window.Initialized)
+                    {
                         window.Initialize(this);
                         window.Initialized = true;
+                        eventEngine.Register(MainWindow);
+                    }
                  }
         }
 
@@ -68,17 +71,17 @@ namespace NetX.XWindows
 
         public XApplication(XWindow mainWindow)
         {
-            this.MainWindow = mainWindow;
             // Pick screen number from Display environment variable
             xcbConnection = LibXcb.xcb_connect(null,IntPtr.Zero);
+            this.MainWindow = mainWindow;
             eventEngine = new EventEngine(this);
         }
 
         public XApplication(int screeNumber, XWindow mainWindow)
         {
-            this.MainWindow = mainWindow;
             this.screeNumber = screeNumber;
             xcbConnection = LibXcb.xcb_connect(null,ref screeNumber);
+            this.MainWindow = mainWindow;
             screenIsNull = false;
             eventEngine = new EventEngine(this);
         }
@@ -144,7 +147,6 @@ namespace NetX.XWindows
             CalculateQuitToken();
             LibXcb.xcb_map_window(this.Connection,MainWindow.windowHandle);
             Flush();
-            eventEngine.Register(MainWindow);
             eventEngine.BlockingEventLoop();
         }
 
@@ -217,9 +219,9 @@ namespace NetX.XWindows
                     if(xcbConnection != IntPtr.Zero)
                         xcbConnection = IntPtr.Zero;  
                 }
-
-                // Flip disposed to true so we don't try do de-allocate
-                // already de-allocated memmory 
+                
+                if(MainWindow != null)
+                    MainWindow.Dispose();
                 disposed = true;
             }
         }

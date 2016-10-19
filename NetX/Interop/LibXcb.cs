@@ -93,9 +93,32 @@ namespace NetX.Interop
                                                                 uint drawable, 
                                                                 ushort width, 
                                                                 ushort height);
+        
+        [DllImport(libxcb, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        internal static extern XcbVoidCookie xcb_create_colormap (  IntPtr xcbConnection,
+                                                                    byte alloc,
+                                                                    uint colormapId,
+                                                                    uint windowId,
+                                                                    uint visualId );
+        
+        [DllImport(libxcb, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        internal static extern XcbVoidCookie xcb_free_colormap (IntPtr xcbConnection, uint colormapId );
+
 
         [DllImport(libxcb, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         internal static extern XcbVoidCookie xcb_free_pixmap(IntPtr xcbConnection, uint pixmapHandle);
+
+        [DllImport(libxcb, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        internal static extern XcbVoidCookie xcb_alloc_color (  IntPtr xcbConnection,
+                                                                uint colormapId,
+                                                                ushort red,
+                                                                ushort green,
+                                                                ushort blue );
+                                                                
+        [DllImport(libxcb, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        internal static extern IntPtr xcb_alloc_color_reply (   IntPtr xcbConnection, 
+                                                                XcbVoidCookie cookie, 
+                                                                IntPtr genericError );
         
         [DllImport(libxcb, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         internal static extern XcbVoidCookie xcb_create_gc (IntPtr xcbConnection,

@@ -72,6 +72,15 @@ namespace NetX.Interop
         [DllImport(libCairo)]
         internal static extern IntPtr cairo_get_target (IntPtr cairoContext);
 
+
+        [DllImport(libCairo)]
+        internal static extern void cairo_set_source (IntPtr cairoContext,IntPtr cairoPattern);
+
+        [DllImport(libCairo)]
+        internal static extern void cairo_set_line_join (IntPtr cairoContext, CairoLineJoin line_join);
+
+
+
         //////////////////////
         // cairo_path api's //
         //////////////////////

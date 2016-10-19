@@ -1,21 +1,20 @@
 using System;
 using NetX.Interop;
-using NetX.XWindows.Internal;
 
 namespace NetX.XWindows.Graphics
 {
     public class CairoSurface : IDisposable
     {
         private IntPtr cairoSurface;
-        internal XApplication applicaton;
+        internal XApplication application;
         private bool disposed = false; // To detect redundant calls
 
-        public CairoSurface(XApplication applicaton)
+        public CairoSurface(XApplication application)
         {
-            this.applicaton = applicaton;
+            this.application = application;
             CreateCairoSurface();
-
-            this.applicaton.ApplicationTerminated += (obj,arguments) => {
+            
+            this.application.ApplicationTerminated += (obj,arguments) => {
                 if(!disposed)
                 {
                     Dispose(true);
@@ -32,16 +31,21 @@ namespace NetX.XWindows.Graphics
         {
             try
             {
-                cairoSurface = LibCairo.cairo_xcb_surface_create (  applicaton.Connection,
-                                                                    applicaton.MainWindow.windowHandle,
-                                                                    applicaton.VisualType,
-                                                                    applicaton.MainWindow.Width,
-                                                                    applicaton.MainWindow.Height);
+                cairoSurface = LibCairo.cairo_xcb_surface_create (  application.Connection,
+                                                                    application.MainWindow.windowHandle,
+                                                                    application.VisualType,
+                                                                    application.MainWindow.Width,
+                                                                    application.MainWindow.Height);
             }
             catch
             {
+                application.Dispose();
                 throw new Exception("CairoSurface.CairoSurface: Could not create XcbSurface");
             }
+
+            application.MainWindow.WindowExposed += (o,args) => {
+                SetSize( args.Width + args.X, args.Height + args.Y );
+            };
         }
 
         public void SetSize(int width, int height)

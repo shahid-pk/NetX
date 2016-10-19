@@ -1,7 +1,6 @@
-using System;
 using System.Runtime.InteropServices;
 
-namespace NetX.Interop.Internal
+namespace NetX.Interop
 {
     // enum _cairo_surface_type
     internal enum CairoSurfaceType
@@ -54,6 +53,14 @@ namespace NetX.Interop.Internal
         CAIRO_LINE_CAP_BUTT,
         CAIRO_LINE_CAP_ROUND,
         CAIRO_LINE_CAP_SQUARE
+    }
+
+    // for cairo_line_join_t
+    public enum CairoLineJoin
+    {
+        CAIRO_LINE_JOIN_MITER,
+        CAIRO_LINE_JOIN_ROUND,
+        CAIRO_LINE_JOIN_BEVEL
     }
 
     // cairo_extend_t

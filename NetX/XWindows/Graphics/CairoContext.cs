@@ -1,6 +1,5 @@
 using System;
 using NetX.Interop;
-using NetX.XWindows.Internal;
 
 namespace NetX.XWindows.Graphics
 {
@@ -8,6 +7,7 @@ namespace NetX.XWindows.Graphics
     {
         private IntPtr cairoContext;
         private bool disposed = false;
+        private CairoSurface cairoSurface;
 
         public CairoContext(CairoSurface cairoSurface)
         {
@@ -19,13 +19,8 @@ namespace NetX.XWindows.Graphics
             {
                 throw new Exception("CairoContext.CairoContext : could not create CairoContext");
             }
-
-             cairoSurface.applicaton.ApplicationTerminated += (obj,arguments) => {
-                if(!disposed)
-                {
-                    Dispose(true);
-                }
-            };
+            
+            this.cairoSurface = cairoSurface;
         }
 
         public void Save()
@@ -38,14 +33,34 @@ namespace NetX.XWindows.Graphics
             LibCairo.cairo_restore(cairoContext);
         }
 
+        public void SetSource(IntPtr cairoPattern)
+        {
+            LibCairo.cairo_set_source(cairoContext,cairoPattern);
+        }
+
+        public void SetLineJoin(CairoLineJoin lineJoin)
+        {
+            LibCairo.cairo_set_line_join(cairoContext, lineJoin);
+        }
+
+        public void Translate(double tx, double ty)
+        {
+            LibCairo.cairo_translate(cairoContext,tx,ty);
+        }
+
         public void SetSourceRGB(double red, double green, double blue)
         {
-            LibCairo.cairo_set_source_rgb(cairoContext,red,green,blue);
+            LibCairo.cairo_set_source_rgb(cairoContext,(double)red/255,(double)green/255,(double)blue/255);
         }
 
         public void SetSourceRGBA(double red, double green, double blue, double alpha)
         {
-            LibCairo.cairo_set_source_rgba(cairoContext,red,green,blue,alpha);
+            LibCairo.cairo_set_source_rgba(cairoContext,(double)red/255,(double)green/255,(double)blue/255,alpha);
+        }
+
+        public void SetLineWidth(double width)
+        {
+            LibCairo.cairo_set_line_width(cairoContext,width);
         }
 
         public void LineTo(double x, double y)
@@ -117,7 +132,7 @@ namespace NetX.XWindows.Graphics
                 {
                     LibCairo.cairo_destroy(cairoContext);
                 }
-
+                cairoSurface.Dispose();
                 disposed = true;
             }
         }
